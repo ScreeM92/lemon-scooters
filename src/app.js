@@ -1,16 +1,32 @@
-const SchemaValidator = require("./schema_validator");
-const JSONFileWriter = require('./json_writer');
-const Aggregator = require("./aggregator");
-const log = require('./logging');
+import RideValidator from "./ride_validator.js";
+import FileWriter from './file_writer.js';
+import RideCalculator from "./ride_calculator.js";
+import Logger from './common/logger.js';
+import dotenv from 'dotenv';
+import csv from 'fast-csv';
+import ScooterService from './common/services/scooter_service.js';
 
-const fs = require('fs');
-const csv = require('fast-csv');
+// remove
+// import fs from 'fs';
 
-log.info('Running ...');
-const fileReadStream = fs.createReadStream('./scooter_1337.csv', 'utf8');
-const csvParser = csv({headers: true, trim: true});
+dotenv.config();
 
-fileReadStream.pipe(csvParser)
-  .pipe(new SchemaValidator())
-  .pipe(new Aggregator())
-  .pipe(new JSONFileWriter({prefix: 'output_'}));
+Logger.info('Running ...');
+
+try {
+  // const fileReadStream = fs.createReadStream('./scooter_1337.csv', 'utf8');
+  const { data: priceRate } = await ScooterService.getRate();
+  const { data: fileReadStream } = await ScooterService.getRentalEventsCsv();
+  const csvParser = csv({ headers: true, trim: true });
+
+  fileReadStream
+    .pipe(csvParser)
+    .pipe(new RideValidator())
+    .pipe(new RideCalculator(priceRate))
+    .pipe(new FileWriter());
+}
+catch(error) {
+  Logger.error(error.toString());
+}
+
+Logger.info('... End');

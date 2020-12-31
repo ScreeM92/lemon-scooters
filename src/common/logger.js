@@ -1,13 +1,9 @@
-const winston = require('winston');
+import winston from 'winston';
 
-const log = winston.createLogger({
+export default winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   transports: [
     new winston.transports.Console()
   ]
 });
-
-module.exports = log;
-
-
