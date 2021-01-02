@@ -23,8 +23,7 @@ class FileWriter extends Writable {
 
     if (isValid) {
       this.ridesFileWriter.write(chunk);
-    }
-    else {
+    } else {
       this.errorsFileWriter.write(chunk);
     }
 
