@@ -4,7 +4,7 @@ import keyBy from 'lodash.keyby';
 
 class RideCalculator extends Transform {
 
-  constructor(priceRate, options) {
+  constructor(priceRate, options = {}) {
     super({ objectMode: true, ...options });
 
     this.priceRate = keyBy(priceRate, 'zone');
@@ -22,7 +22,6 @@ class RideCalculator extends Transform {
       chunk.currency = ride.currency;
       chunk.minutes = minutes;
     }
-
     this.push(chunk);
 
     callback();

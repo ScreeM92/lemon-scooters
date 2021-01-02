@@ -2,18 +2,19 @@ import { Writable } from 'stream';
 import fs from 'fs';
 import moment from 'moment';
 import JSONStream from 'JSONStream';
+import { getRidesPath, getErrorsPath } from './common/config.js';
 
 class FileWriter extends Writable {
 
-  constructor(options) {
+  constructor(options = {}) {
     super({ objectMode: true, ...options });
 
-    this.ridesFileWriter = JSONStream.stringify('[\n', ',\n', '\n]\n');
-    this.errorsFileWriter = JSONStream.stringify('[\n', ',\n', '\n]\n');
+    this.ridesFileWriter = JSONStream.stringify('[', ',', ']');
+    this.errorsFileWriter = JSONStream.stringify('[', ',', ']');
 
     const timestamp = moment().unix();
-    this.ridesFileWriter.pipe(fs.createWriteStream(`./output/rides/rides_${timestamp}.json`));
-    this.errorsFileWriter.pipe(fs.createWriteStream(`./output/errors/errors_${timestamp}.json`));
+    this.ridesFileWriter.pipe(fs.createWriteStream(getRidesPath(timestamp)));
+    this.errorsFileWriter.pipe(fs.createWriteStream(getErrorsPath(timestamp)));
   }
 
   _write(chunk, encoding, callback) {
@@ -39,4 +40,3 @@ class FileWriter extends Writable {
 }
 
 export default FileWriter;
-

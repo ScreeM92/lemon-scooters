@@ -1,5 +1,6 @@
-module.exports = {
+export default {
   clearMocks: true,
   coverageDirectory: "coverage",
-  testEnvironment: "node",
+  testEnvironment: 'jest-environment-node',
+  transform: {}
 };

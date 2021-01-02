@@ -4,10 +4,10 @@ import ridesSchema from './common/schemas/scooter_rides_schema.js';
 
 class RideValidator extends Transform {
 
-  constructor(options) {
+  constructor(options = {}) {
     super({ objectMode: true, ...options });
 
-    this.validate = new Ajv().compile(ridesSchema);
+    this.validate = new Ajv.default({ allErrors: true }).compile(ridesSchema);
   }
 
   _transform(chunk, encoding, callback) {

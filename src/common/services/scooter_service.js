@@ -6,9 +6,9 @@ import priceRateSchema from '../schemas/price_rate_schema.js';
 
 class ScooterService {
   
-  async getRentalEventsCsv() {
+  async getRidesCsv() {
     try {
-      return await HttpClient.getFile(process.env.RENTAL_EVENTS_URL);
+      return await HttpClient.getFile(process.env.RIDES_URL);
     } catch (error) {
       Logger.error(error.toString());
     }
@@ -17,15 +17,16 @@ class ScooterService {
   async getRate() {
     try {
       const rate = await HttpClient.get(process.env.PRICE_RATE_URL);
-      this.validate = new Ajv().compile(priceRateSchema);
+      const validate = new Ajv.default({ allErrors: true }).compile(priceRateSchema);
 
-      const isValid = this.validate(rate.data);
+      const isValid = validate(rate.data);
       if (!isValid) {
-        throw new Error(JSON.stringify((this.validate.errors)));
+        throw new Error(JSON.stringify((validate.errors)));
       }
-
+      
       return rate;
-    } catch (error) {
+    }
+    catch(error) {
       Logger.error(error.toString());
     }
   }

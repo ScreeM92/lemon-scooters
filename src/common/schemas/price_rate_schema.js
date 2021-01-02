@@ -1,7 +1,6 @@
 export default {
-    title: 'record',
+    title: 'rate',
     type: 'array',
-    uniqueItemProperties: ['zone'],
     items: {
         type: 'object',
         properties: {
